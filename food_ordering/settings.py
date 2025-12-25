@@ -34,8 +34,8 @@ ENCRYPTION_SALT = encryption_salt_env.encode('utf-8') if isinstance(encryption_s
 # - PendingRestaurant: address, phone, email
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Read DEBUG from environment variable, default to False for safety
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+# Read DEBUG from environment variable, default to True for development
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 # ALLOWED_HOSTS configuration
 # In production, set this via environment variable
@@ -82,7 +82,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'axes.middleware.AxesMiddleware',  # Temporarily disabled to debug authentication issues
+    'axes.middleware.AxesMiddleware',  # Axes middleware for brute force protection
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'core.middleware.SessionTimeoutMiddleware',  # Custom session timeout middleware - temporarily disabled for debugging
@@ -216,6 +216,7 @@ LOGOUT_REDIRECT_URL = 'core:login'
 # Custom backend that allows login with either username or email address
 AUTHENTICATION_BACKENDS = [
     'core.authentication.UsernameOrEmailBackend',  # Custom backend for username/email login
+    'axes.backends.AxesStandaloneBackend',  # Axes backend for brute force protection
     'django.contrib.auth.backends.ModelBackend',  # Fallback to default Django backend
 ]
 
@@ -292,10 +293,11 @@ AXES_COOLOFF_TIME = 1  # Lockout for 1 hour (more effective deterrent)
 AXES_RESET_ON_SUCCESS = True  # Reset failure count on successful login
 AXES_LOCKOUT_TEMPLATE = 'core/lockout.html'  # Custom lockout page
 AXES_VERBOSITY = 1  # Log lockout events
-AXES_BACKEND = 'axes.backends.standalone.AxesBackend'  # Use standalone backend (switch to cache for production)
+AXES_BACKEND = 'axes.backends.AxesStandaloneBackend'  # Use standalone backend (switch to cache for production)
 AXES_LOCKOUT_PARAMETERS = ['ip_address']  # IP-based lockout only (prevents username enumeration)
 AXES_ENABLE_ACCESS_FAILURE_LOG = True  # Enable detailed failure logging for monitoring
-AXES_ONLY_USER_FAILURES = False  # Prevent username enumeration attacks
+# AXES_ONLY_USER_FAILURES is deprecated - removed to fix warning
+# Use AXES_LOCKOUT_PARAMETERS = ['ip_address'] instead for IP-based lockout
 
 # Production cache backend for Axes (uncomment for production with Redis/Memcached)
 # AXES_BACKEND = 'axes.backends.cache.AxesBackend'
