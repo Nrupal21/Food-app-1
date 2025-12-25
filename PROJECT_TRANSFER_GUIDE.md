@@ -72,7 +72,7 @@ food ordering system/
 
 ### Prerequisites
 - Python 3.8 or higher
-- PostgreSQL 12 or higher
+- PostgreSQL 17 or higher
 - Git
 - Virtual environment (recommended)
 
