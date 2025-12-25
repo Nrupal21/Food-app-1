@@ -63,7 +63,7 @@ django-filter==23.5  # Filtering for DRF
 
 # Development & Debugging
 django-debug-toolbar==4.2.0  # Debug toolbar for development
-silk==5.0.4  # Request profiling
+django-silk==5.4.3  # Request profiling
 
 # Testing
 factory-boy==3.3.0  # Test data generation
